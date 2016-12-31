@@ -6,10 +6,10 @@ class J_down: public Machine {
 
 public:
 	enum {
-		STEP1, STEP2, STEP3, STEP4
+		STEP1, STEP2, STEP3, STEP4, STEP5, STEP6, STEP7, STEP8
 	}; // STATES
 	enum {
-		EVT_TIMER_SELBSTHALT, EVT_TIMER_SWITCHWAIT, EVT_TIMER_WAITTOSTOP, ELSE
+		EVT_TIMER_SELBSTHALT, EVT_TIMER_SWITCHWAIT, EVT_TIMER_WAITTOSTOP, EVT_TIMER_STOPCOMMAND, EVT_TIMER_WAITAFTERSTOP, EVT_TIMER_TURN, ELSE
 	}; // EVENTS
 	J_down(void) :
 			Machine() {
@@ -24,12 +24,12 @@ public:
 
 private:
 	enum {
-		ENT_STEP1, EXT_STEP1, ENT_STEP2, EXT_STEP2, ENT_STEP3, EXT_STEP3, ENT_STEP4, EXT_STEP4
+		ENT_STEP1, EXT_STEP1, ENT_STEP2, EXT_STEP2, ENT_STEP3, EXT_STEP3, ENT_STEP4, EXT_STEP4, ENT_STEP5, EXT_STEP5, ENT_STEP6, ENT_STEP7, EXT_STEP7, ENT_STEP8
 	}; // ACTIONS
 	int event(int id);
 	void action(int id);
 	int pin_rd, pin_rp;
-	atm_timer_millis timer_selbsthalt, timer_switchwait, timer_duration;
+	atm_timer_millis timer_selbsthalt, timer_switchwait, timer_driving_down, timer_stop_command, timer_waitafterstop, timer_turn;
 
 };
 
