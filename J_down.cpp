@@ -1,13 +1,7 @@
 #include "J_down.h"
 
-/* Add optional parameters for the state machine to begin()
- * Add extra initialization code
- */
-
 J_down& J_down::begin(int pin_rd, int pin_rp) {
-	// clang-format off
 
-	// clang-format on
 
 	  const static state_t state_table[] PROGMEM = {
 	    /*           ON_ENTER  ON_LOOP    ON_EXIT  EVT_TIMER_SELBSTHALT  EVT_TIMER_SWITCHWAIT  EVT_TIMER_WAITTOSTOP  EVT_TIMER_STOPCOMMAND  EVT_TIMER_WAITAFTERSTOP EVT_TIMER_TURN  EVT_ON      ELSE */
@@ -21,10 +15,10 @@ J_down& J_down::begin(int pin_rd, int pin_rp) {
 		/* STEP7 */ ENT_STEP7,      -1, EXT_STEP7,                   -1,                   -1,                   -1,          -1,               -1,                   IDLE,             -1,      -1
 	  };
 	Machine::begin(state_table, ELSE);
-	this->pin_rd = pin_rd; // Save the pins
+	this->pin_rd = pin_rd;
 	this->pin_rp = pin_rp;
 
-	pinMode(pin_rd, OUTPUT); // Set the pin modes
+	pinMode(pin_rd, OUTPUT);
 	pinMode(pin_rp, OUTPUT);
 
 	timer_selbsthalt.set(-1); // Initialize the timers
@@ -62,6 +56,11 @@ J_down& J_down::setchannel(char aChannel) {
 	return *this;
 }
 
+J_down& J_down::configure(int givenTimeDown, int givenTimeTurn) {
+	timedown = givenTimeDown;
+	timeturn = givenTimeTurn;
+	return *this;
+}
 /* Add C++ code for each action
  * This generates the 'output' for the state machine
  */
@@ -75,13 +74,13 @@ void J_down::action(int id) {
 	case ENT_STEP1:
 		Serial.print(channel);
 		Serial.println( "ENT_STEP1, preparing direction" );
-		timer_switchwait.set(20);
+		timer_switchwait.set(timeSwitchWait);
 		digitalWrite(pin_rd, HIGH);
 		return;
 	case ENT_STEP2:
 		Serial.print(channel);
 		Serial.println( "ENT_STEP2, start driving down till self hold");
-		timer_selbsthalt.set(100);
+		timer_selbsthalt.set(timeSelbstHalt);
 		digitalWrite(pin_rp, HIGH);
 		return;
 	case EXT_STEP2:
@@ -92,7 +91,7 @@ void J_down::action(int id) {
 	case ENT_STEP3:
 		Serial.print(channel);
 		Serial.println( "ENT_STEP3, waiting before release direction");
-		timer_switchwait.set(20);
+		timer_switchwait.set(timeSwitchWait);
 		return;
 	case EXT_STEP3:
 		Serial.print(channel);
@@ -102,12 +101,12 @@ void J_down::action(int id) {
 	case ENT_STEP4:
 		Serial.print(channel);
 		Serial.println( "ENT_STEP4, driving down" );
-		timer_driving_down.set(400);
+		timer_driving_down.set(timedown);
 		return;
 	case ENT_STEP5:
 		Serial.print(channel);
 		Serial.println( "ENT_STEP5, stop command" );
-		timer_stop_command.set(100);
+		timer_stop_command.set(timeStopCommand);
 		digitalWrite(pin_rp, HIGH);
 		return;
 	case EXT_STEP5:
@@ -118,12 +117,12 @@ void J_down::action(int id) {
 	case ENT_STEP6:
 		Serial.print(channel);
 		Serial.println( "ENT_STEP6, waiting after stop command" );
-		timer_waitafterstop.set(100);
+		timer_waitafterstop.set(timeWaitAfterStop);
 		return;
 	case ENT_STEP7:
 		Serial.print(channel);
 		Serial.println( "ENT_STEP7, turning" );
-		timer_turn.set(300);
+		timer_turn.set(timeturn);
 		digitalWrite(pin_rp, HIGH);
 		return;
 	case EXT_STEP7:
@@ -131,13 +130,6 @@ void J_down::action(int id) {
 		Serial.println( "ENT_STEP7, turning done" );
 		digitalWrite(pin_rp, LOW);
 	}
-}
-
-J_down& J_down::automatic(int wait, int halt, int dur) {
-	//timer_selbsthalt.set(halt);
-	//timer_switchwait.set(wait);
-	//timer_driving_down.set(dur);
-	return *this;
 }
 
 /* Optionally override the default trigger() method

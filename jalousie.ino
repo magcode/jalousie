@@ -16,8 +16,8 @@ void setup() {
 	  //simulation 5ms press -> start
 	  buttonDown1.begin( 2, 5 ).onChange( J_down1, J_down1.EVT_ON );
 	  buttonDown2.begin( 3, 5 ).onChange( J_down2, J_down2.EVT_ON );
-	  J_down1.begin(4, 5).setchannel('1').automatic(20, 50, 60);
-	  J_down2.begin(6, 7).setchannel('2').automatic(20, 50, 60);
+	  J_down1.begin(4, 5).setchannel('1').configure(400, 300);
+	  J_down2.begin(6, 7).setchannel('2').configure(400, 300);
 
 
 }

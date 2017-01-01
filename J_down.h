@@ -20,8 +20,8 @@ public:
 	J_down& trigger(int event);
 	int state(void);
 	J_down& begin(int pin_rd, int pin_rp);
-	J_down& automatic(int wait, int halt, int dur);
 	J_down& setchannel(char channel);
+	J_down& configure(int timedown, int timeturn);
 
 private:
 	enum {
@@ -32,4 +32,10 @@ private:
 	int pin_rd, pin_rp;
 	atm_timer_millis timer_selbsthalt, timer_switchwait, timer_driving_down, timer_stop_command, timer_waitafterstop, timer_turn;
 	char channel;
+	int timedown;
+	int timeturn;
+	int timeSwitchWait = 20;
+	int timeStopCommand = 100;
+	int timeWaitAfterStop = 100;
+	int timeSelbstHalt = 100;
 };
