@@ -4,15 +4,15 @@ J_down& J_down::begin(int pin_rd, int pin_rp) {
 
 
 	  const static state_t state_table[] PROGMEM = {
-	    /*           ON_ENTER  ON_LOOP    ON_EXIT  EVT_TIMER_SELBSTHALT  EVT_TIMER_SWITCHWAIT  EVT_TIMER_WAITTOSTOP  EVT_TIMER_STOPCOMMAND  EVT_TIMER_WAITAFTERSTOP EVT_TIMER_TURN  EVT_ON      ELSE */
-        /* IDLE  */   ENT_OFF,      -1,        -1,                   -1,                   -1,                   -1,          -1,               -1,                     -1,          STEP1,      -1,
-	    /* STEP1 */ ENT_STEP1,      -1,        -1,                   -1,                STEP2,                   -1,          -1,               -1,                     -1,             -1,      -1,
-	    /* STEP2 */ ENT_STEP2,      -1, EXT_STEP2,                STEP3,                   -1,                   -1,          -1,               -1,                     -1,             -1,      -1,
-	    /* STEP3 */ ENT_STEP3,      -1, EXT_STEP3,                   -1,                STEP4,                   -1,          -1,               -1,                     -1,             -1,      -1,
-	    /* STEP4 */ ENT_STEP4,      -1, EXT_STEP4,                   -1,                   -1,                STEP5,          -1,               -1,                     -1,             -1,      -1,
-		/* STEP5 */ ENT_STEP5,      -1, EXT_STEP5,                   -1,                   -1,                   -1,       STEP6,               -1,                     -1,             -1,      -1,
-		/* STEP6 */ ENT_STEP6,      -1,        -1,                   -1,                   -1,                   -1,          -1,            STEP7,                     -1,             -1,      -1,
-		/* STEP7 */ ENT_STEP7,      -1, EXT_STEP7,                   -1,                   -1,                   -1,          -1,               -1,                   IDLE,             -1,      -1
+	    /*           ON_ENTER  ON_LOOP    ON_EXIT  EVT_TIMER_SELBSTHALT  EVT_TIMER_SWITCHWAIT  EVT_TIMER_WAITTOSTOP  EVT_TIMER_STOPCOMMAND  EVT_TIMER_WAITAFTERSTOP EVT_TIMER_TURN  EVT_ON      EVT_STOP    ELSE */
+        /* IDLE  */   ENT_OFF,      -1,        -1,                   -1,                   -1,                   -1,          -1,               -1,                     -1,          STEP1,        -1,       -1,
+	    /* STEP1 */ ENT_STEP1,      -1,        -1,                   -1,                STEP2,                   -1,          -1,               -1,                     -1,             -1,        -1,       -1,
+	    /* STEP2 */ ENT_STEP2,      -1, EXT_STEP2,                STEP3,                   -1,                   -1,          -1,               -1,                     -1,             -1,        -1,       -1,
+	    /* STEP3 */ ENT_STEP3,      -1, EXT_STEP3,                   -1,                STEP4,                   -1,          -1,               -1,                     -1,             -1,        -1,       -1,
+	    /* STEP4 */ ENT_STEP4,      -1, EXT_STEP4,                   -1,                   -1,                STEP5,          -1,               -1,                     -1,             -1,     STEP5,       -1,
+		/* STEP5 */ ENT_STEP5,      -1, EXT_STEP5,                   -1,                   -1,                   -1,       STEP6,               -1,                     -1,             -1,        -1,       -1,
+		/* STEP6 */ ENT_STEP6,      -1,        -1,                   -1,                   -1,                   -1,          -1,            STEP7,                     -1,             -1,        -1,       -1,
+		/* STEP7 */ ENT_STEP7,      -1, EXT_STEP7,                   -1,                   -1,                   -1,          -1,               -1,                   IDLE,             -1,        -1,       -1
 	  };
 	Machine::begin(state_table, ELSE);
 	this->pin_rd = pin_rd;
@@ -121,14 +121,30 @@ void J_down::action(int id) {
 		return;
 	case ENT_STEP7:
 		Serial.print(channel);
-		Serial.println( "ENT_STEP7, turning" );
-		timer_turn.set(timeturn);
-		digitalWrite(pin_rp, HIGH);
+
+		if (timeturn >0)
+		{
+			Serial.println( "ENT_STEP7, turning" );
+			timer_turn.set(timeturn);
+			digitalWrite(pin_rp, HIGH);
+		} else {
+			Serial.println( "ENT_STEP7, not turning, time is zero" );
+			timer_turn.set(0);
+		}
 		return;
 	case EXT_STEP7:
 		Serial.print(channel);
 		Serial.println( "ENT_STEP7, turning done" );
 		digitalWrite(pin_rp, LOW);
+		/*
+	case ENT_STEP8:
+		Serial.print(channel);
+		Serial.println( "ENT_STEP8, stop command" );
+		digitalWrite(pin_rp, LOW);
+		//delay()
+		digitalWrite(pin_rd, LOW);
+	}
+	*/
 	}
 }
 

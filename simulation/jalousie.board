@@ -14,8 +14,8 @@
         </ATMega>
       </specific>
       <position>
-        <x>746</x>
-        <y>75</y>
+        <x>804</x>
+        <y>90</y>
       </position>
     </component>
     <component>
@@ -91,8 +91,8 @@
       <version>1.0.0.0</version>
       <specific />
       <position>
-        <x>475</x>
-        <y>205</y>
+        <x>470</x>
+        <y>206</y>
       </position>
     </component>
     <component>
@@ -146,12 +146,66 @@
       <version>1.0.0.0</version>
       <specific />
       <position>
-        <x>260</x>
+        <x>261</x>
         <y>69</y>
+      </position>
+    </component>
+    <component>
+      <name>PushButton 3</name>
+      <dll>C:\Users\Marko\privat\ha\emulare_1.9\components\BasicComponents.dll</dll>
+      <title>PushButton</title>
+      <version>1.0.0.0</version>
+      <specific />
+      <position>
+        <x>677</x>
+        <y>37</y>
+      </position>
+    </component>
+    <component>
+      <name>VCC 3</name>
+      <dll>C:\Users\Marko\privat\ha\emulare_1.9\components\BasicComponents.dll</dll>
+      <title>VCC</title>
+      <version>1.0.0.0</version>
+      <specific />
+      <position>
+        <x>615</x>
+        <y>38</y>
       </position>
     </component>
   </components>
   <wires>
+    <wire>
+      <object1>0</object1>
+      <object2>13</object2>
+      <pinName1>PD1</pinName1>
+      <pinName2>c2</pinName2>
+      <linePath>
+        <segment>
+          <x1>804</x1>
+          <y1>119</y1>
+          <x2>787</x2>
+          <y2>119</y2>
+        </segment>
+        <segment>
+          <x1>787</x1>
+          <y1>119</y1>
+          <x2>787</x2>
+          <y2>97</y2>
+        </segment>
+        <segment>
+          <x1>787</x1>
+          <y1>97</y1>
+          <x2>701</x2>
+          <y2>97</y2>
+        </segment>
+        <segment>
+          <x1>701</x1>
+          <y1>97</y1>
+          <x2>701</x2>
+          <y2>86</y2>
+        </segment>
+      </linePath>
+    </wire>
     <wire>
       <object1>0</object1>
       <object2>12</object2>
@@ -159,28 +213,16 @@
       <pinName2>c2</pinName2>
       <linePath>
         <segment>
-          <x1>284</x1>
+          <x1>285</x1>
           <y1>118</y1>
-          <x2>284</x2>
+          <x2>285</x2>
           <y2>129</y2>
         </segment>
         <segment>
-          <x1>284</x1>
+          <x1>285</x1>
           <y1>129</y1>
-          <x2>726</x2>
+          <x2>804</x2>
           <y2>129</y2>
-        </segment>
-        <segment>
-          <x1>726</x1>
-          <y1>129</y1>
-          <x2>726</x2>
-          <y2>114</y2>
-        </segment>
-        <segment>
-          <x1>726</x1>
-          <y1>114</y1>
-          <x2>746</x2>
-          <y2>114</y2>
         </segment>
       </linePath>
     </wire>
@@ -194,13 +236,13 @@
           <x1>542</x1>
           <y1>86</y1>
           <x2>542</x2>
-          <y2>124</y2>
+          <y2>139</y2>
         </segment>
         <segment>
           <x1>542</x1>
-          <y1>124</y1>
-          <x2>746</x2>
-          <y2>124</y2>
+          <y1>139</y1>
+          <x2>804</x2>
+          <y2>139</y2>
         </segment>
       </linePath>
     </wire>
@@ -214,13 +256,13 @@
           <x1>242</x1>
           <y1>262</y1>
           <x2>242</x2>
-          <y2>134</y2>
+          <y2>149</y2>
         </segment>
         <segment>
           <x1>242</x1>
-          <y1>134</y1>
-          <x2>746</x2>
-          <y2>134</y2>
+          <y1>149</y1>
+          <x2>804</x2>
+          <y2>149</y2>
         </segment>
       </linePath>
     </wire>
@@ -234,13 +276,13 @@
           <x1>313</x1>
           <y1>260</y1>
           <x2>313</x2>
-          <y2>184</y2>
+          <y2>199</y2>
         </segment>
         <segment>
           <x1>313</x1>
-          <y1>184</y1>
-          <x2>746</x2>
-          <y2>184</y2>
+          <y1>199</y1>
+          <x2>804</x2>
+          <y2>199</y2>
         </segment>
       </linePath>
     </wire>
@@ -251,28 +293,28 @@
       <pinName2>+</pinName2>
       <linePath>
         <segment>
-          <x1>746</x1>
-          <y1>194</y1>
-          <x2>702</x2>
-          <y2>194</y2>
+          <x1>804</x1>
+          <y1>209</y1>
+          <x2>760</x2>
+          <y2>209</y2>
         </segment>
         <segment>
-          <x1>702</x1>
-          <y1>194</y1>
-          <x2>702</x2>
-          <y2>194</y2>
+          <x1>760</x1>
+          <y1>209</y1>
+          <x2>760</x2>
+          <y2>195</y2>
         </segment>
         <segment>
-          <x1>702</x1>
-          <y1>194</y1>
-          <x2>498</x2>
-          <y2>194</y2>
+          <x1>760</x1>
+          <y1>195</y1>
+          <x2>493</x2>
+          <y2>195</y2>
         </segment>
         <segment>
-          <x1>498</x1>
-          <y1>194</y1>
-          <x2>498</x2>
-          <y2>205</y2>
+          <x1>493</x1>
+          <y1>195</y1>
+          <x2>493</x2>
+          <y2>206</y2>
         </segment>
       </linePath>
     </wire>
@@ -286,13 +328,13 @@
           <x1>605</x1>
           <y1>247</y1>
           <x2>605</x2>
-          <y2>204</y2>
+          <y2>219</y2>
         </segment>
         <segment>
           <x1>605</x1>
-          <y1>204</y1>
-          <x2>746</x2>
-          <y2>204</y2>
+          <y1>219</y1>
+          <x2>804</x2>
+          <y2>219</y2>
         </segment>
       </linePath>
     </wire>
@@ -357,13 +399,13 @@
       <pinName2>GND</pinName2>
       <linePath>
         <segment>
-          <x1>498</x1>
-          <y1>254</y1>
-          <x2>498</x2>
+          <x1>493</x1>
+          <y1>255</y1>
+          <x2>493</x2>
           <y2>395</y2>
         </segment>
         <segment>
-          <x1>498</x1>
+          <x1>493</x1>
           <y1>395</y1>
           <x2>507</x2>
           <y2>395</y2>
@@ -417,14 +459,40 @@
         <segment>
           <x1>222</x1>
           <y1>58</y1>
-          <x2>284</x2>
+          <x2>285</x2>
           <y2>58</y2>
         </segment>
         <segment>
-          <x1>284</x1>
+          <x1>285</x1>
           <y1>58</y1>
-          <x2>284</x2>
+          <x2>285</x2>
           <y2>69</y2>
+        </segment>
+      </linePath>
+    </wire>
+    <wire>
+      <object1>13</object1>
+      <object2>14</object2>
+      <pinName1>c1</pinName1>
+      <pinName2>Vcc</pinName2>
+      <linePath>
+        <segment>
+          <x1>632</x1>
+          <y1>62</y1>
+          <x2>632</x2>
+          <y2>11</y2>
+        </segment>
+        <segment>
+          <x1>632</x1>
+          <y1>11</y1>
+          <x2>701</x2>
+          <y2>11</y2>
+        </segment>
+        <segment>
+          <x1>701</x1>
+          <y1>11</y1>
+          <x2>701</x2>
+          <y2>37</y2>
         </segment>
       </linePath>
     </wire>
