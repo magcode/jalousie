@@ -20,7 +20,9 @@ J_down& J_down::begin(int pin_rd, int pin_rp) {
 
 	pinMode(pin_rd, OUTPUT);
 	pinMode(pin_rp, OUTPUT);
-
+  digitalWrite(pin_rd, HIGH);
+  digitalWrite(pin_rp, HIGH);
+  
 	timer_selbsthalt.set(-1); // Initialize the timers
 	timer_switchwait.set(-1);
 	timer_driving_down.set(-1);
