@@ -1,5 +1,6 @@
 #include "Automaton.h"
 #include "J_down.h"
+#include "J_up.h"
 #include <SPI.h>
 #include <Ethernet.h>
 #include <PubSubClient.h>
@@ -14,15 +15,11 @@ PubSubClient client(ethClient);
 #define MOTOR_UP    -1
 #define MOTOR_STOP   0
 #define MOTOR_DOWN   1
-#define MOTOR_INVAL -999
-
-
 
 J_down* J_downs[4]; 
-
+J_up* J_ups[4]; 
 
 void callback(char* topic, byte* payload, unsigned int length) {
-  // home/sz/rollo/2,1/down
   char paylC [length];
   String myString = String((char *) payload);
   myString.toCharArray(paylC, length+1);
@@ -46,7 +43,8 @@ void processCommand(char* topic, char* durationRaw) {
   
   int iCommand = -1;
   int iDur = atoi(durationRaw);
-  
+
+  // split the full incoming mqtt message
   ptr = strtok(topic, delimiter);    
   while(ptr != NULL) {
     if (ii==3) {
@@ -66,7 +64,7 @@ void processCommand(char* topic, char* durationRaw) {
     ii++;
   }
 
-  // multiple motors?
+  // split the motor definition. Do we have multiple motors?
   char* motors = strtok(motorsP, delimiterMotors);
   while(motors != NULL) {
     int iMotor = atoi(motors);
@@ -76,8 +74,7 @@ void processCommand(char* topic, char* durationRaw) {
       J_downs[iMotor]->trigger( J_downs[iMotor]->EVT_ON );
     } else if (iCommand==MOTOR_STOP) {
       //J_down1.trigger( J_down1.EVT_STOP );
-    }
-    
+    }    
     motors = strtok(NULL, delimiterMotors);
   }
 }
@@ -106,9 +103,8 @@ void reconnect() {
 }
 
 void setup() {
-
-	  Serial.begin(57600);
-	  Serial.println( "Started" );
+  Serial.begin(57600);
+	Serial.println( "Started" );
     
   client.setServer(server, 1883);
   client.setCallback(callback);
@@ -116,39 +112,23 @@ void setup() {
   Ethernet.begin(mac, ip);
   // Allow the hardware to sort itself out
   delay(1500);
-  /*
-	  Atm_digital buttonDown1;
-	  Atm_digital buttonUp1;
-	  Atm_digital buttonStop2;
+  
+  J_downs[0] = new J_down();
+  J_downs[1] = new J_down();
+  J_downs[2] = new J_down();
+  J_downs[3] = new J_down();
 
-	  Atm_digital buttonDown2;
-	  Atm_digital buttonUp2;
-	  //simulation 5ms press -> start
-	  //buttonDown1.begin( 2, 5 ).onChange( J_down1, J_down1.EVT_ON );
-
-	  buttonStop2.begin( 1, 5 ).onChange( J_down2, J_down2.EVT_STOP );
-	  buttonDown2.begin( 3, 5 ).onChange( J_down2, J_down2.EVT_ON );
-	  buttonDown1.begin( 2, 5 ).onChange( J_down2.configure(0, 0) );
-
-
-	  //buttonStop2.begin( 1, 5 ).onChange( J_down2, J_down2.EVT_ON );
-*/
-
-
-J_downs[0] = new J_down();
-J_downs[1] = new J_down();
-
-    J_downs[0]->begin(14, 15).setchannel('1');
-    J_downs[1]->begin(16, 17).setchannel('2');
-    //J_down2.begin(16, 17).setchannel('2').configure(3000, 500);
-
+  J_downs[0]->begin(14, 15).setchannel('1');
+  J_downs[1]->begin(16, 17).setchannel('2');
+  J_downs[2]->begin(18, 19).setchannel('3');
+  J_downs[3]->begin(20, 21).setchannel('4');
 }
 
 void loop() {
-	automaton.run();
-
   if (!client.connected()) {
     reconnect();
   }
   client.loop();
+
+	automaton.run();
 }
