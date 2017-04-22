@@ -4,12 +4,12 @@ J_down& J_down::begin(int pin_rd, int pin_rp) {
 
 
 	  const static state_t state_table[] PROGMEM = {
-	    /*           ON_ENTER  ON_LOOP    ON_EXIT  EVT_TIMER_SELBSTHALT  EVT_TIMER_SWITCHWAIT  EVT_TIMER_WAITTOSTOP  EVT_TIMER_STOPCOMMAND  EVT_TIMER_WAITAFTERSTOP EVT_TIMER_TURN  EVT_ON      EVT_STOP    ELSE */
-        /* IDLE  */   ENT_OFF,      -1,        -1,                   -1,                   -1,                   -1,          -1,               -1,                     -1,          STEP1,        -1,       -1,
-	    /* STEP1 */ ENT_STEP1,      -1,        -1,                   -1,                STEP2,                   -1,          -1,               -1,                     -1,             -1,        -1,       -1,
-	    /* STEP2 */ ENT_STEP2,      -1, EXT_STEP2,                STEP3,                   -1,                   -1,          -1,               -1,                     -1,             -1,        -1,       -1,
-	    /* STEP3 */ ENT_STEP3,      -1, EXT_STEP3,                   -1,                STEP4,                   -1,          -1,               -1,                     -1,             -1,        -1,       -1,
-	    /* STEP4 */ ENT_STEP4,      -1, EXT_STEP4,                   -1,                   -1,                STEP5,          -1,               -1,                     -1,             -1,     STEP5,       -1,
+    /*           ON_ENTER  ON_LOOP    ON_EXIT  EVT_TIMER_SELBSTHALT  EVT_TIMER_SWITCHWAIT  EVT_TIMER_WAITTOSTOP  EVT_TIMER_STOPCOMMAND  EVT_TIMER_WAITAFTERSTOP EVT_TIMER_TURN  EVT_ON      EVT_STOP    ELSE */
+    /* IDLE  */   ENT_OFF,      -1,        -1,                   -1,                   -1,                   -1,          -1,               -1,                     -1,          STEP1,        -1,       -1,
+	  /* STEP1 */ ENT_STEP1,      -1,        -1,                   -1,                STEP2,                   -1,          -1,               -1,                     -1,             -1,        -1,       -1,
+	  /* STEP2 */ ENT_STEP2,      -1, EXT_STEP2,                STEP3,                   -1,                   -1,          -1,               -1,                     -1,             -1,        -1,       -1,
+	  /* STEP3 */ ENT_STEP3,      -1, EXT_STEP3,                   -1,                STEP4,                   -1,          -1,               -1,                     -1,             -1,        -1,       -1,
+	  /* STEP4 */ ENT_STEP4,      -1, EXT_STEP4,                   -1,                   -1,                STEP5,          -1,               -1,                     -1,             -1,     STEP5,       -1,
 		/* STEP5 */ ENT_STEP5,      -1, EXT_STEP5,                   -1,                   -1,                   -1,       STEP6,               -1,                     -1,             -1,        -1,       -1,
 		/* STEP6 */ ENT_STEP6,      -1,        -1,                   -1,                   -1,                   -1,          -1,            STEP7,                     -1,             -1,        -1,       -1,
 		/* STEP7 */ ENT_STEP7,      -1, EXT_STEP7,                   -1,                   -1,                   -1,          -1,               -1,                   IDLE,             -1,        -1,       -1
@@ -75,18 +75,18 @@ void J_down::action(int id) {
 		Serial.print(channel);
 		Serial.println( "ENT_STEP1, preparing direction" );
 		timer_switchwait.set(timeSwitchWait);
-		digitalWrite(pin_rd, HIGH);
+		digitalWrite(pin_rd, LOW);
 		return;
 	case ENT_STEP2:
 		Serial.print(channel);
 		Serial.println( "ENT_STEP2, start driving down till self hold");
 		timer_selbsthalt.set(timeSelbstHalt);
-		digitalWrite(pin_rp, HIGH);
+		digitalWrite(pin_rp, LOW);
 		return;
 	case EXT_STEP2:
 		Serial.print(channel);
 		Serial.println( "EXT_STEP2, self hold started, releasing power");
-		digitalWrite(pin_rp, LOW);
+		digitalWrite(pin_rp, HIGH);
 		return;
 	case ENT_STEP3:
 		Serial.print(channel);
@@ -96,7 +96,7 @@ void J_down::action(int id) {
 	case EXT_STEP3:
 		Serial.print(channel);
 		Serial.println( "EXT_STEP3, release direction" );
-		digitalWrite(pin_rd, LOW);
+		digitalWrite(pin_rd, HIGH);
 		return;
 	case ENT_STEP4:
 		Serial.print(channel);
@@ -107,12 +107,12 @@ void J_down::action(int id) {
 		Serial.print(channel);
 		Serial.println( "ENT_STEP5, stop command" );
 		timer_stop_command.set(timeStopCommand);
-		digitalWrite(pin_rp, HIGH);
+		digitalWrite(pin_rp, LOW);
 		return;
 	case EXT_STEP5:
 		Serial.print(channel);
 		Serial.println( "EXT_STEP5, stop command done" );
-		digitalWrite(pin_rp, LOW);
+		digitalWrite(pin_rp, HIGH);
 		return;
 	case ENT_STEP6:
 		Serial.print(channel);
@@ -126,7 +126,7 @@ void J_down::action(int id) {
 		{
 			Serial.println( "ENT_STEP7, turning" );
 			timer_turn.set(timeturn);
-			digitalWrite(pin_rp, HIGH);
+			digitalWrite(pin_rp, LOW);
 		} else {
 			Serial.println( "ENT_STEP7, not turning, time is zero" );
 			timer_turn.set(0);
@@ -135,7 +135,7 @@ void J_down::action(int id) {
 	case EXT_STEP7:
 		Serial.print(channel);
 		Serial.println( "ENT_STEP7, turning done" );
-		digitalWrite(pin_rp, LOW);
+		digitalWrite(pin_rp, HIGH);
 		/*
 	case ENT_STEP8:
 		Serial.print(channel);

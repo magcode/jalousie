@@ -34,8 +34,8 @@ private:
 	char channel;
 	int timedown;
 	int timeturn;
-	int timeSwitchWait = 20;
-	int timeStopCommand = 100;
-	int timeWaitAfterStop = 100;
+	int timeSwitchWait = 100;
+	int timeStopCommand = 200;
+	int timeWaitAfterStop = 1000;
 	int timeSelbstHalt = 2000;
 };

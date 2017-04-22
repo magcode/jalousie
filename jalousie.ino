@@ -16,10 +16,9 @@ PubSubClient client(ethClient);
 #define MOTOR_DOWN   1
 #define MOTOR_INVAL -999
 
-J_down J_down1;
-J_down J_down2;
 
 
+J_down* J_downs[4]; 
 
 
 void callback(char* topic, byte* payload, unsigned int length) {
@@ -71,11 +70,12 @@ void processCommand(char* topic, char* durationRaw) {
   char* motors = strtok(motorsP, delimiterMotors);
   while(motors != NULL) {
     int iMotor = atoi(motors);
-    
+    iMotor = iMotor - 1;
     if (iCommand==MOTOR_DOWN) {
-      J_down1.trigger( J_down1.EVT_ON );
+      J_downs[iMotor]->configure(3000, iDur);
+      J_downs[iMotor]->trigger( J_downs[iMotor]->EVT_ON );
     } else if (iCommand==MOTOR_STOP) {
-      J_down1.trigger( J_down1.EVT_STOP );
+      //J_down1.trigger( J_down1.EVT_STOP );
     }
     
     motors = strtok(NULL, delimiterMotors);
@@ -133,9 +133,14 @@ void setup() {
 
 	  //buttonStop2.begin( 1, 5 ).onChange( J_down2, J_down2.EVT_ON );
 */
-	  J_down1.begin(4, 5).setchannel('1').configure(3000, 500);
-	  J_down2.begin(6, 7).setchannel('2').configure(3000, 500);
 
+
+J_downs[0] = new J_down();
+J_downs[1] = new J_down();
+
+    J_downs[0]->begin(14, 15).setchannel('1');
+    J_downs[1]->begin(16, 17).setchannel('2');
+    //J_down2.begin(16, 17).setchannel('2').configure(3000, 500);
 
 }
 
