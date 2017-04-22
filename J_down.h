@@ -37,5 +37,5 @@ private:
 	int timeSwitchWait = 20;
 	int timeStopCommand = 100;
 	int timeWaitAfterStop = 100;
-	int timeSelbstHalt = 100;
+	int timeSelbstHalt = 2000;
 };
