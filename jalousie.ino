@@ -12,10 +12,6 @@ IPAddress server(192, 168, 155, 20);
 EthernetClient ethClient;
 PubSubClient client(ethClient);
 
-#define MOTOR_UP    -1
-#define MOTOR_STOP   0
-#define MOTOR_DOWN   1
-
 J_down* J_downs[4]; 
 J_up* J_ups[4]; 
 
@@ -46,7 +42,7 @@ void processCommand(char* topic, char* durationRaw) {
   char motorsP[8];
   char delimiterMotors[] = ",";
   
-  int iCommand = -1;
+  int iCommand = 0;
   int iDur = atoi(durationRaw);
 
   // split the full incoming mqtt message
@@ -57,11 +53,11 @@ void processCommand(char* topic, char* durationRaw) {
       strcpy(motorsP,ptr);
     } else if (ii==4) {
       if (strcmp(ptr,"up") == 0) {
-        iCommand = MOTOR_UP;
+        iCommand = -1;
       } else if (strcmp(ptr,"down") == 0) {
-        iCommand = MOTOR_DOWN;
+        iCommand = 1;
       } else if (strcmp(ptr,"stop") == 0) {
-        iCommand = MOTOR_STOP;
+        iCommand = 0;
       }
       Serial.print("command: "); Serial.println(iCommand); 
     } 
@@ -69,15 +65,29 @@ void processCommand(char* topic, char* durationRaw) {
     ii++;
   }
 
+  // split payload
+  // payload is defined as <time for up/down>,<time for turning>
+  char* payloads = strtok(durationRaw, delimiterMotors);
+  ii=0;
+  while(payloads != NULL) {
+    if (ii==0) {
+      Serial.print("dur1: "); Serial.println(payloads); 
+    } else if (ii==1) {
+      Serial.print("dur2: "); Serial.println(payloads); 
+    }
+    payloads = strtok(NULL, delimiterMotors);
+    ii++;    
+  }
+  
   // split the motor definition. Do we have multiple motors?
   char* motors = strtok(motorsP, delimiterMotors);
   while(motors != NULL) {
     int iMotor = atoi(motors);
     iMotor = iMotor - 1;
-    if (iCommand==MOTOR_DOWN) {
+    if (iCommand==1) {
       J_downs[iMotor]->configure(3000, iDur);
       J_downs[iMotor]->trigger( J_downs[iMotor]->EVT_ON );
-    } else if (iCommand==MOTOR_STOP) {
+    } else if (iCommand==0) {
       //J_down1.trigger( J_down1.EVT_STOP );
     }    
     motors = strtok(NULL, delimiterMotors);
