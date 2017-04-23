@@ -20,9 +20,14 @@ J_down* J_downs[4];
 J_up* J_ups[4]; 
 
 void callback(char* topic, byte* payload, unsigned int length) {
-  char paylC [length];
-  String myString = String((char *) payload);
-  myString.toCharArray(paylC, length+1);
+  // convert byte array into char array
+  char paylC [length+1];
+  for (int i = 0; i < length; i++) {
+    Serial.print((char)payload[i]);
+    paylC[i] = (char)payload[i];
+  }
+  paylC[length] = '\0';
+
   processCommand(topic, paylC);
 }
 
@@ -121,7 +126,7 @@ void setup() {
   J_downs[0]->begin(14, 15).setchannel('1');
   J_downs[1]->begin(16, 17).setchannel('2');
   J_downs[2]->begin(18, 19).setchannel('3');
-  J_downs[3]->begin(20, 21).setchannel('4');
+  J_downs[3]->begin(2, 3).setchannel('4');
 }
 
 void loop() {
