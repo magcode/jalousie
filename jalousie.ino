@@ -27,8 +27,9 @@ void callback(char* topic, byte* payload, unsigned int length) {
   processCommand(topic, paylC);
 }
 
-
-// home/sz/rollo/2,1/down
+// executes the command
+// e.g. topic = home/sz/rollo/2,1/down
+//      durationRaw = 10000,1500
 void processCommand(char* topic, char* durationRaw) {
   Serial.print("topic: ");
   Serial.println(topic);
@@ -92,6 +93,14 @@ void processCommand(char* topic, char* durationRaw) {
     }    
     motors = strtok(NULL, delimiterMotors);
   }
+
+   Serial.print("free RAM: ");Serial.println(freeRam ());
+}
+
+int freeRam () {
+  extern int __heap_start, *__brkval; 
+  int v; 
+  return (int) &v - (__brkval == 0 ? (int) &__heap_start : (int) __brkval); 
 }
 
 void reconnect() {
