@@ -95,7 +95,7 @@ void J_up::action(int id) {
 		return;
 	case ENT_STEP2:
     debug(msgENT_STEP2);
-		timer_driving_up.set(timeup);
+		timer_driving_up.set(timeup-timeSelbstHalt);
 		return;
 	case ENT_STEP3:
     debug(msgENT_STEP3);

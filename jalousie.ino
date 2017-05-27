@@ -11,7 +11,7 @@ const char msgConnectedMQTT[] PROGMEM = "Connected to MQTT.";
 const char msgRetryMQTT[] PROGMEM = "Trying again in 5 seconds...";
 const char msgStarted[] PROGMEM = "Started";
 const char msgIgnore[] PROGMEM = "Ignoring this request";
-const char msgIncoming[] PROGMEM = "Incoming request with topic and payload:";
+const char msgIncoming[] PROGMEM = "Incoming request with topic and payload: ";
 const char msgFailedMQTT[] PROGMEM = "Failed, rc=";
 const char msgFreeRam[] PROGMEM = "Free RAM: ";
 
@@ -37,7 +37,7 @@ void callback(char* topic, byte* payload, unsigned int length) {
 }
 
 // executes the command
-// e.g. topic = home/sz/rollo/2,1/down
+// e.g. topic = home/wz/blinds/2,1/down
 //      durationRaw = 10000,1500
 void processCommand(char* topic, char* durationRaw) {
   Serial.print((const __FlashStringHelper *) msgIncoming);
@@ -131,14 +131,14 @@ void reconnect() {
   while (!client.connected()) {
     Serial.println((const __FlashStringHelper *) msgAttemtMQTT);
     // Attempt to connect
-    if (client.connect("jalousiecontroller-sz")) {
+    if (client.connect("blindscontroller-wz")) {
       Serial.println((const __FlashStringHelper *) msgConnectedMQTT);
       // Once connected, publish an announcement...
-      client.publish("home/sz/rollo","I'm online");
+      client.publish("home/wz/blinds","I'm online");
       // ... and resubscribe
-      client.subscribe("home/sz/rollo/+/up");
-      client.subscribe("home/sz/rollo/+/down");
-      client.subscribe("home/sz/rollo/+/stop");
+      client.subscribe("home/wz/blinds/+/up");
+      client.subscribe("home/wz/blinds/+/down");
+      client.subscribe("home/wz/blinds/+/stop");
     } else {
       Serial.println((const __FlashStringHelper *) msgFailedMQTT);      
       Serial.print(client.state());

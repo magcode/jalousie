@@ -116,7 +116,7 @@ void J_down::action(int id) {
 		return;
 	case ENT_STEP4:
     debug(msgENT_STEP4);
-		timer_driving_down.set(timedown-timeSelbstHalt);
+		timer_driving_down.set(timedown);
 		return;
 	case ENT_STEP5:
     if (timedown > timeSelbstHalt) {
