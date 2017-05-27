@@ -24,6 +24,7 @@ public:
 	J_up& configure(int timeup);
 
 private:
+  J_up& debug(char* aChar);
 	enum {
 		ENT_OFF, ENT_STEP1, EXT_STEP1, ENT_STEP2, EXT_STEP2, ENT_STEP3, EXT_STEP3, ENT_STEP4, EXT_STEP4, ENT_STEP5, EXT_STEP5, ENT_STEP6, ENT_STEP7, EXT_STEP7
 	}; // ACTIONS

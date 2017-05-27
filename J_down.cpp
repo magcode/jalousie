@@ -3,7 +3,6 @@ const char msgENT_OFF [] PROGMEM = "-idle";
 const char msgENT_STEP1 [] PROGMEM = "-preparing direction";
 const char msgENT_STEP2_1 [] PROGMEM = "-drive till self hold";
 const char msgENT_STEP2_2 [] PROGMEM = "-short drive";
-
 const char msgEXT_STEP2 [] PROGMEM = "-self hold started, release power";
 const char msgENT_STEP3 [] PROGMEM = "-wait before release direction";
 const char msgEXT_STEP3 [] PROGMEM = "-release direction";
@@ -84,84 +83,72 @@ J_down& J_down::configure(int givenTimeDown, int givenTimeTurn) {
 void J_down::action(int id) {
 	switch (id) {
 	case ENT_OFF:
-		Serial.print(channel);
-    Serial.println((const __FlashStringHelper *) msgENT_OFF);
+    debug(msgENT_OFF);
 		return;
 	case ENT_STEP1:
-		Serial.print(channel);
-    Serial.println((const __FlashStringHelper *) msgENT_STEP1);
+    debug(msgENT_STEP1);
 		timer_switchwait.set(timeSwitchWait);
 		digitalWrite(pin_rd, LOW);
 		return;
 	case ENT_STEP2:
-		Serial.print(channel);
     if (timedown > timeSelbstHalt)
     {
-      Serial.println((const __FlashStringHelper *) msgENT_STEP2_1);      
+      debug(msgENT_STEP2_1);
       timer_selbsthalt.set(timeSelbstHalt);
       digitalWrite(pin_rp, LOW);
     } else {
-      Serial.println((const __FlashStringHelper *) msgENT_STEP2_2);
+      debug(msgENT_STEP2_2);
       timer_selbsthalt.set(timedown);
       digitalWrite(pin_rp, LOW);
     }
 		return;
 	case EXT_STEP2:
-		Serial.print(channel);
-    Serial.println((const __FlashStringHelper *) msgEXT_STEP2);
+    debug(msgEXT_STEP2);
 		digitalWrite(pin_rp, HIGH);
 		return;
 	case ENT_STEP3:
-		Serial.print(channel);
-    Serial.println((const __FlashStringHelper *) msgENT_STEP3);
+    debug(msgENT_STEP3);
 		timer_switchwait.set(timeSwitchWait);
 		return;
 	case EXT_STEP3:
-		Serial.print(channel);
-    Serial.println((const __FlashStringHelper *) msgEXT_STEP3);
+    debug(msgEXT_STEP3);
 		digitalWrite(pin_rd, HIGH);
 		return;
 	case ENT_STEP4:
-		Serial.print(channel);
-    Serial.println((const __FlashStringHelper *) msgENT_STEP4);
-		timer_driving_down.set(timedown);
+    debug(msgENT_STEP4);
+		timer_driving_down.set(timedown-timeSelbstHalt);
 		return;
 	case ENT_STEP5:
-		Serial.print(channel);
     if (timedown > timeSelbstHalt) {
-      Serial.println((const __FlashStringHelper *) msgENT_STEP5_1);
+      debug(msgENT_STEP5_1);
 		  timer_stop_command.set(timeStopCommand);
       digitalWrite(pin_rp, LOW);
     } else {
-      Serial.println((const __FlashStringHelper *) msgENT_STEP5_2);
+      debug(msgENT_STEP5_2);
       timer_stop_command.set(0);      
     }		
 		return;
 	case EXT_STEP5:
-		Serial.print(channel);
-    Serial.println((const __FlashStringHelper *) msgEXT_STEP5);
+    debug(msgEXT_STEP5);
 		digitalWrite(pin_rp, HIGH);
 		return;
 	case ENT_STEP6:
-		Serial.print(channel);
-    Serial.println((const __FlashStringHelper *) msgENT_STEP6);
+    debug(msgENT_STEP6);
 		timer_waitafterstop.set(timeWaitAfterStop);
 		return;
 	case ENT_STEP7:
-		Serial.print(channel);
 		if (timeturn >0)
 		{
-      Serial.println((const __FlashStringHelper *) msgENT_STEP7_1);
+      debug(msgENT_STEP7_1);
 			timer_turn.set(timeturn);
 			digitalWrite(pin_rp, LOW);
 		} else {
-      Serial.println((const __FlashStringHelper *) msgENT_STEP7_2);
+      debug(msgENT_STEP7_2);
 			timer_turn.set(0);
 		}
 		return;
 	case EXT_STEP7:
-		Serial.print(channel);
-    Serial.println((const __FlashStringHelper *) msgEXT_STEP7);
+    debug(msgEXT_STEP7);
 		digitalWrite(pin_rp, HIGH);
 	}
 }
@@ -175,25 +162,15 @@ J_down& J_down::trigger(int event) {
 	return *this;
 }
 
-/* Optionally override the default state() method
- * Control what the machine returns when another process requests its state
- */
+J_down& J_down::debug(char* aChar) {
+    Serial.print("Down ");
+    Serial.print(channel);
+    Serial.println((const __FlashStringHelper *) aChar); 
+}
 
 int J_down::state(void) {
 	return Machine::state();
 }
-
-/* Nothing customizable below this line                          
- ************************************************************************************************
- */
-
-/* Public event methods
- *
- */
-
-/* State trace method
- * Sets the symbol table and the default logging method for serial monitoring
- */
 
 J_down& J_down::trace(Stream & stream) {
 	Machine::setTrace(&stream, atm_serial_debug::trace,

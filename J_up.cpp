@@ -133,17 +133,11 @@ int J_up::state(void) {
 	return Machine::state();
 }
 
-/* Nothing customizable below this line                          
- ************************************************************************************************
- */
-
-/* Public event methods
- *
- */
-
-/* State trace method
- * Sets the symbol table and the default logging method for serial monitoring
- */
+J_up& J_up::debug(char* aChar) {
+    Serial.print("Up ");
+    Serial.print(channel);
+    Serial.println((const __FlashStringHelper *) aChar); 
+}
 
 J_up& J_up::trace(Stream & stream) {
 	Machine::setTrace(&stream, atm_serial_debug::trace,
