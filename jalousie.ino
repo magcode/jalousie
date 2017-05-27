@@ -8,9 +8,12 @@
 
 const char msgAttemtMQTT[] PROGMEM = "Attempting MQTT connection...";
 const char msgConnectedMQTT[] PROGMEM = "Connected to MQTT.";
-const char msgRetryMQTT[] PROGMEM = "trying again in 5 seconds...";
+const char msgRetryMQTT[] PROGMEM = "Trying again in 5 seconds...";
 const char msgStarted[] PROGMEM = "Started";
-const char msgIgnore[] PROGMEM = "ignoring this request";
+const char msgIgnore[] PROGMEM = "Ignoring this request";
+const char msgIncoming[] PROGMEM = "Incoming request with topic and payload:";
+const char msgFailedMQTT[] PROGMEM = "Failed, rc=";
+const char msgFreeRam[] PROGMEM = "Free RAM: ";
 
 byte mac[]    = {  0xDE, 0xED, 0xBA, 0xFE, 0xFE, 0xED };
 IPAddress ip(192, 168, 155, 89);
@@ -26,7 +29,6 @@ void callback(char* topic, byte* payload, unsigned int length) {
   // convert byte array into char array
   char paylC [length+1];
   for (int i = 0; i < length; i++) {
-    Serial.print((char)payload[i]);
     paylC[i] = (char)payload[i];
   }
   paylC[length] = '\0';
@@ -38,9 +40,9 @@ void callback(char* topic, byte* payload, unsigned int length) {
 // e.g. topic = home/sz/rollo/2,1/down
 //      durationRaw = 10000,1500
 void processCommand(char* topic, char* durationRaw) {
-  //Serial.print("topic: ");
-  Serial.println(topic);
-  //Serial.print("duration: ");
+  Serial.print((const __FlashStringHelper *) msgIncoming);
+  Serial.print(topic);
+  Serial.print(":");
   Serial.println(durationRaw);
   
   char delimiter[] = "/";
@@ -68,7 +70,6 @@ void processCommand(char* topic, char* durationRaw) {
       } else if (strcmp(ptr,"stop") == 0) {
         iCommand = 0;
       }
-      Serial.print("command: "); Serial.println(iCommand); 
     } 
     ptr = strtok(NULL, delimiter);
     ii++;
@@ -81,10 +82,8 @@ void processCommand(char* topic, char* durationRaw) {
   while(payloads != NULL) {
     if (ii==0) {
       iDurDrive = atoi(payloads);
-      Serial.print("dur1: "); Serial.println(payloads); 
     } else if (ii==1) {
       iDurTurn = atoi(payloads);
-      Serial.print("dur2: "); Serial.println(payloads); 
     }
     payloads = strtok(NULL, delimiterMotors);
     ii++;    
@@ -96,22 +95,29 @@ void processCommand(char* topic, char* durationRaw) {
     int iMotor = atoi(motors);
     iMotor = iMotor - 1;
     if (iCommand==1) {
-      J_downs[iMotor]->configure(iDurDrive, iDurTurn);
-      J_downs[iMotor]->trigger( J_downs[iMotor]->EVT_ON );
+      // only if there is no other machine running
+      if (J_ups[iMotor]->state() == 0) {
+        J_downs[iMotor]->configure(iDurDrive, iDurTurn);
+        J_downs[iMotor]->trigger( J_downs[iMotor]->EVT_ON );
+      } else {
+        Serial.println((const __FlashStringHelper *) msgIgnore);
+      }
     } else if (iCommand==0) {
       //J_down1.trigger( J_down1.EVT_STOP );
     } else if (iCommand==-1) {
+      // only if there is no other machine running
       if (J_downs[iMotor]->state() == 0) {
         J_ups[iMotor]->configure(iDurDrive);
         J_ups[iMotor]->trigger( J_ups[iMotor]->EVT_ON );
       } else {
-        Serial.print((const __FlashStringHelper *) msgIgnore);
+        Serial.println((const __FlashStringHelper *) msgIgnore);
       }       
     }
     motors = strtok(NULL, delimiterMotors);
   }
 
-   Serial.print("free RAM: ");Serial.println(freeRam ());
+   Serial.print((const __FlashStringHelper *) msgFreeRam);
+   Serial.println(freeRam ());
 }
 
 int freeRam () {
@@ -134,7 +140,7 @@ void reconnect() {
       client.subscribe("home/sz/rollo/+/down");
       client.subscribe("home/sz/rollo/+/stop");
     } else {
-      Serial.print("failed, rc=");
+      Serial.println((const __FlashStringHelper *) msgFailedMQTT);      
       Serial.print(client.state());
       Serial.print((const __FlashStringHelper *) msgRetryMQTT);
       

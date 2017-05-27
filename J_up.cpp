@@ -67,50 +67,42 @@ J_up& J_up::configure(int givenTimeUp) {
 void J_up::action(int id) {
 	switch (id) {
 	case ENT_OFF:
-		Serial.print(channel);
-    Serial.println((const __FlashStringHelper *) msgENT_OFF);		
+    debug(msgENT_OFF);
 		return;
 	case ENT_STEP1:
-		Serial.print(channel);		
-    Serial.println((const __FlashStringHelper *) msgENT_STEP1);
+    debug(msgENT_STEP1);
 		timer_selbsthalt.set(timeSelbstHalt);
 		digitalWrite(pin_rp, LOW);
 		return;
 	case EXT_STEP1:
-		Serial.print(channel);
-    Serial.println((const __FlashStringHelper *) msgEXT_STEP1);
+    debug(msgEXT_STEP1);
 		digitalWrite(pin_rp, HIGH);
 		return;
 	case ENT_STEP2:
-		Serial.print(channel);
-    Serial.println((const __FlashStringHelper *) msgENT_STEP2);	
+    debug(msgENT_STEP2);
 		timer_driving_up.set(timeup);
 		return;
 	case ENT_STEP3:
-		Serial.print(channel);
-    Serial.println((const __FlashStringHelper *) msgENT_STEP3);
+    debug(msgENT_STEP3);
 		timer_switchwait.set(timeSwitchWait);
 		digitalWrite(pin_rd, LOW);
 		return;
 	case EXT_STEP3:
-		Serial.print(channel);
-    Serial.println((const __FlashStringHelper *) msgEXT_STEP3);		
+    debug(msgEXT_STEP3);
 		digitalWrite(pin_rp, LOW);
 		return;
 	case ENT_STEP4:
 		timer_stop_command.set(timeStopCommand);
 		return;
 	case EXT_STEP4:
-		Serial.print(channel);
-		Serial.println((const __FlashStringHelper *) msgEXT_STEP4);
+		debug(msgEXT_STEP4);
 		digitalWrite(pin_rp, HIGH);
 		return;
 	case ENT_STEP5:
 		timer_switchwait.set(timeSwitchWait);
 		return;
 	case EXT_STEP5:
-		Serial.print(channel);
-    Serial.println((const __FlashStringHelper *) msgEXT_STEP5);		
+    debug(msgEXT_STEP5);
 		digitalWrite(pin_rd, HIGH);
 		return;
 	}
