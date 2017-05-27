@@ -4,6 +4,13 @@
 #include <SPI.h>
 #include <Ethernet.h>
 #include <PubSubClient.h>
+#include <avr/pgmspace.h>
+
+const char msgAttemtMQTT[] PROGMEM = "Attempting MQTT connection...";
+const char msgConnectedMQTT[] PROGMEM = "Connected to MQTT.";
+const char msgRetryMQTT[] PROGMEM = "trying again in 5 seconds...";
+const char msgStarted[] PROGMEM = "Started";
+const char msgIgnore[] PROGMEM = "ignoring this request";
 
 byte mac[]    = {  0xDE, 0xED, 0xBA, 0xFE, 0xFE, 0xED };
 IPAddress ip(192, 168, 155, 89);
@@ -13,7 +20,7 @@ EthernetClient ethClient;
 PubSubClient client(ethClient);
 
 J_down* J_downs[4]; 
-J_up* J_ups[4]; 
+J_up* J_ups[4];
 
 void callback(char* topic, byte* payload, unsigned int length) {
   // convert byte array into char array
@@ -31,9 +38,9 @@ void callback(char* topic, byte* payload, unsigned int length) {
 // e.g. topic = home/sz/rollo/2,1/down
 //      durationRaw = 10000,1500
 void processCommand(char* topic, char* durationRaw) {
-  Serial.print("topic: ");
+  //Serial.print("topic: ");
   Serial.println(topic);
-  Serial.print("duration: ");
+  //Serial.print("duration: ");
   Serial.println(durationRaw);
   
   char delimiter[] = "/";
@@ -44,7 +51,8 @@ void processCommand(char* topic, char* durationRaw) {
   char delimiterMotors[] = ",";
   
   int iCommand = 0;
-  int iDur = atoi(durationRaw);
+  int iDurDrive = 0;
+  int iDurTurn = 0;
 
   // split the full incoming mqtt message
   ptr = strtok(topic, delimiter);    
@@ -72,8 +80,10 @@ void processCommand(char* topic, char* durationRaw) {
   ii=0;
   while(payloads != NULL) {
     if (ii==0) {
+      iDurDrive = atoi(payloads);
       Serial.print("dur1: "); Serial.println(payloads); 
     } else if (ii==1) {
+      iDurTurn = atoi(payloads);
       Serial.print("dur2: "); Serial.println(payloads); 
     }
     payloads = strtok(NULL, delimiterMotors);
@@ -86,11 +96,18 @@ void processCommand(char* topic, char* durationRaw) {
     int iMotor = atoi(motors);
     iMotor = iMotor - 1;
     if (iCommand==1) {
-      J_downs[iMotor]->configure(3000, iDur);
+      J_downs[iMotor]->configure(iDurDrive, iDurTurn);
       J_downs[iMotor]->trigger( J_downs[iMotor]->EVT_ON );
     } else if (iCommand==0) {
       //J_down1.trigger( J_down1.EVT_STOP );
-    }    
+    } else if (iCommand==-1) {
+      if (J_downs[iMotor]->state() == 0) {
+        J_ups[iMotor]->configure(iDurDrive);
+        J_ups[iMotor]->trigger( J_ups[iMotor]->EVT_ON );
+      } else {
+        Serial.print((const __FlashStringHelper *) msgIgnore);
+      }       
+    }
     motors = strtok(NULL, delimiterMotors);
   }
 
@@ -106,10 +123,10 @@ int freeRam () {
 void reconnect() {
   // Loop until we're reconnected
   while (!client.connected()) {
-    Serial.print("Attempting MQTT connection...");
+    Serial.println((const __FlashStringHelper *) msgAttemtMQTT);
     // Attempt to connect
     if (client.connect("jalousiecontroller-sz")) {
-      Serial.println("connected");
+      Serial.println((const __FlashStringHelper *) msgConnectedMQTT);
       // Once connected, publish an announcement...
       client.publish("home/sz/rollo","I'm online");
       // ... and resubscribe
@@ -119,7 +136,8 @@ void reconnect() {
     } else {
       Serial.print("failed, rc=");
       Serial.print(client.state());
-      Serial.println(" try again in 5 seconds");
+      Serial.print((const __FlashStringHelper *) msgRetryMQTT);
+      
       // Wait 5 seconds before retrying
       delay(5000);
     }
@@ -128,8 +146,7 @@ void reconnect() {
 
 void setup() {
   Serial.begin(57600);
-	Serial.println( "Started" );
-    
+	Serial.println((const __FlashStringHelper *) msgStarted);
   client.setServer(server, 1883);
   client.setCallback(callback);
 
@@ -142,10 +159,20 @@ void setup() {
   J_downs[2] = new J_down();
   J_downs[3] = new J_down();
 
+  J_ups[0] = new J_up();
+  J_ups[1] = new J_up();
+  J_ups[2] = new J_up();
+  J_ups[3] = new J_up();
+  
   J_downs[0]->begin(14, 15).setchannel('1');
   J_downs[1]->begin(16, 17).setchannel('2');
   J_downs[2]->begin(18, 19).setchannel('3');
   J_downs[3]->begin(2, 3).setchannel('4');
+
+  J_ups[0]->begin(14, 15).setchannel('1');
+  J_ups[1]->begin(16, 17).setchannel('2');
+  J_ups[2]->begin(18, 19).setchannel('3');
+  J_ups[3]->begin(2, 3).setchannel('4');
 }
 
 void loop() {

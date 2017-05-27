@@ -46,5 +46,15 @@
 			<type>2</type>
 			<location>C:/Users/Marko/privat/ha/sloeber/arduinoPlugin/libraries/Automaton/1.0.1</location>
 		</link>
+		<link>
+			<name>libraries/Ethernet</name>
+			<type>2</type>
+			<location>C:/Users/Marko/privat/ha/sloeber/arduinoPlugin/libraries/Ethernet/1.1.2</location>
+		</link>
+		<link>
+			<name>libraries/SPI</name>
+			<type>2</type>
+			<location>C:/Users/Marko/privat/ha/sloeber/arduinoPlugin/packages/arduino/hardware/avr/1.6.16/libraries/SPI</location>
+		</link>
 	</linkedResources>
 </projectDescription>

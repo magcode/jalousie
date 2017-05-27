@@ -33,7 +33,7 @@ private:
 	atm_timer_millis timer_selbsthalt, timer_switchwait, timer_driving_up, timer_stop_command;
 	char channel;
 	int timeup;
-	int timeSwitchWait = 20;
-	int timeStopCommand = 100;
-	int timeSelbstHalt = 100;
+	int timeSwitchWait = 100;
+	int timeStopCommand = 200;
+	int timeSelbstHalt = 2600;
 };

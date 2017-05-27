@@ -1,8 +1,22 @@
 #include "J_down.h"
+const char msgENT_OFF [] PROGMEM = "-idle";
+const char msgENT_STEP1 [] PROGMEM = "-preparing direction";
+const char msgENT_STEP2_1 [] PROGMEM = "-drive till self hold";
+const char msgENT_STEP2_2 [] PROGMEM = "-short drive";
+
+const char msgEXT_STEP2 [] PROGMEM = "-self hold started, release power";
+const char msgENT_STEP3 [] PROGMEM = "-wait before release direction";
+const char msgEXT_STEP3 [] PROGMEM = "-release direction";
+const char msgENT_STEP4 [] PROGMEM = "-driving down";
+const char msgENT_STEP5_1 [] PROGMEM = "-stop command";
+const char msgENT_STEP5_2 [] PROGMEM = "-no stop command";
+const char msgEXT_STEP5 [] PROGMEM = "-stop command done";
+const char msgENT_STEP6 [] PROGMEM = "-waiting after stop";
+const char msgENT_STEP7_1 [] PROGMEM = "-turning";
+const char msgENT_STEP7_2 [] PROGMEM = "-not turning";
+const char msgEXT_STEP7 [] PROGMEM = "-turning done";
 
 J_down& J_down::begin(int pin_rd, int pin_rp) {
-
-
 	  const static state_t state_table[] PROGMEM = {
     /*           ON_ENTER  ON_LOOP    ON_EXIT  EVT_TIMER_SELBSTHALT  EVT_TIMER_SWITCHWAIT  EVT_TIMER_WAITTOSTOP  EVT_TIMER_STOPCOMMAND  EVT_TIMER_WAITAFTERSTOP EVT_TIMER_TURN  EVT_ON      EVT_STOP    ELSE */
     /* IDLE  */   ENT_OFF,      -1,        -1,                   -1,                   -1,                   -1,          -1,               -1,                     -1,          STEP1,        -1,       -1,
@@ -71,82 +85,84 @@ void J_down::action(int id) {
 	switch (id) {
 	case ENT_OFF:
 		Serial.print(channel);
-		Serial.println( "ENT_OFF, idle" );
+    Serial.println((const __FlashStringHelper *) msgENT_OFF);
 		return;
 	case ENT_STEP1:
 		Serial.print(channel);
-		Serial.println( "ENT_STEP1, preparing direction" );
+    Serial.println((const __FlashStringHelper *) msgENT_STEP1);
 		timer_switchwait.set(timeSwitchWait);
 		digitalWrite(pin_rd, LOW);
 		return;
 	case ENT_STEP2:
 		Serial.print(channel);
-		Serial.println( "ENT_STEP2, start driving down till self hold");
-		timer_selbsthalt.set(timeSelbstHalt);
-		digitalWrite(pin_rp, LOW);
+    if (timedown > timeSelbstHalt)
+    {
+      Serial.println((const __FlashStringHelper *) msgENT_STEP2_1);      
+      timer_selbsthalt.set(timeSelbstHalt);
+      digitalWrite(pin_rp, LOW);
+    } else {
+      Serial.println((const __FlashStringHelper *) msgENT_STEP2_2);
+      timer_selbsthalt.set(timedown);
+      digitalWrite(pin_rp, LOW);
+    }
 		return;
 	case EXT_STEP2:
 		Serial.print(channel);
-		Serial.println( "EXT_STEP2, self hold started, releasing power");
+    Serial.println((const __FlashStringHelper *) msgEXT_STEP2);
 		digitalWrite(pin_rp, HIGH);
 		return;
 	case ENT_STEP3:
 		Serial.print(channel);
-		Serial.println( "ENT_STEP3, waiting before release direction");
+    Serial.println((const __FlashStringHelper *) msgENT_STEP3);
 		timer_switchwait.set(timeSwitchWait);
 		return;
 	case EXT_STEP3:
 		Serial.print(channel);
-		Serial.println( "EXT_STEP3, release direction" );
+    Serial.println((const __FlashStringHelper *) msgEXT_STEP3);
 		digitalWrite(pin_rd, HIGH);
 		return;
 	case ENT_STEP4:
 		Serial.print(channel);
-		Serial.println( "ENT_STEP4, driving down" );
+    Serial.println((const __FlashStringHelper *) msgENT_STEP4);
 		timer_driving_down.set(timedown);
 		return;
 	case ENT_STEP5:
 		Serial.print(channel);
-		Serial.println( "ENT_STEP5, stop command" );
-		timer_stop_command.set(timeStopCommand);
-		digitalWrite(pin_rp, LOW);
+    if (timedown > timeSelbstHalt) {
+      Serial.println((const __FlashStringHelper *) msgENT_STEP5_1);
+		  timer_stop_command.set(timeStopCommand);
+      digitalWrite(pin_rp, LOW);
+    } else {
+      Serial.println((const __FlashStringHelper *) msgENT_STEP5_2);
+      timer_stop_command.set(0);      
+    }		
 		return;
 	case EXT_STEP5:
 		Serial.print(channel);
-		Serial.println( "EXT_STEP5, stop command done" );
+    Serial.println((const __FlashStringHelper *) msgEXT_STEP5);
 		digitalWrite(pin_rp, HIGH);
 		return;
 	case ENT_STEP6:
 		Serial.print(channel);
-		Serial.println( "ENT_STEP6, waiting after stop command" );
+    Serial.println((const __FlashStringHelper *) msgENT_STEP6);
 		timer_waitafterstop.set(timeWaitAfterStop);
 		return;
 	case ENT_STEP7:
 		Serial.print(channel);
-
 		if (timeturn >0)
 		{
-			Serial.println( "ENT_STEP7, turning" );
+      Serial.println((const __FlashStringHelper *) msgENT_STEP7_1);
 			timer_turn.set(timeturn);
 			digitalWrite(pin_rp, LOW);
 		} else {
-			Serial.println( "ENT_STEP7, not turning, time is zero" );
+      Serial.println((const __FlashStringHelper *) msgENT_STEP7_2);
 			timer_turn.set(0);
 		}
 		return;
 	case EXT_STEP7:
 		Serial.print(channel);
-		Serial.println( "ENT_STEP7, turning done" );
+    Serial.println((const __FlashStringHelper *) msgEXT_STEP7);
 		digitalWrite(pin_rp, HIGH);
-		/*
-	case ENT_STEP8:
-		Serial.print(channel);
-		Serial.println( "ENT_STEP8, stop command" );
-		digitalWrite(pin_rp, LOW);
-		//delay()
-		digitalWrite(pin_rd, LOW);
-	}
-	*/
 	}
 }
 

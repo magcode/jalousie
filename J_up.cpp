@@ -1,15 +1,22 @@
 #include "J_up.h"
+const char msgENT_OFF [] PROGMEM = "-idle";
+const char msgENT_STEP1 [] PROGMEM = "-driving up till self hold";
+const char msgEXT_STEP1 [] PROGMEM = "-self hold started, releasing power";
+const char msgENT_STEP2 [] PROGMEM = "-driving up";
+const char msgENT_STEP3 [] PROGMEM = "-preparing stop";
+const char msgEXT_STEP3 [] PROGMEM = "-stop command";
+const char msgEXT_STEP4 [] PROGMEM = "-stop command done, releasing power";
+const char msgEXT_STEP5 [] PROGMEM = "-release direction relay";
 
+  
 J_up& J_up::begin(int pin_rd, int pin_rp) {
-
-
 	  const static state_t state_table[] PROGMEM = {
-	    /*           ON_ENTER  ON_LOOP    ON_EXIT  EVT_TIMER_SELBSTHALT  EVT_TIMER_SWITCHWAIT  EVT_TIMER_WAITTOSTOP  EVT_TIMER_STOPCOMMAND   EVT_ON      ELSE */
-        /* IDLE  */   ENT_OFF,      -1,        -1,                   -1,                   -1,                   -1,          -1,            STEP1,      -1,
-	    /* STEP1 */ ENT_STEP1,      -1, EXT_STEP1,                STEP2,                   -1,                   -1,          -1,               -1,      -1,
-	    /* STEP2 */ ENT_STEP2,      -1, EXT_STEP2,                   -1,                   -1,                STEP3,          -1,               -1,      -1,
-	    /* STEP3 */ ENT_STEP3,      -1, EXT_STEP3,                   -1,                STEP4,                   -1,          -1,               -1,      -1,
-	    /* STEP4 */ ENT_STEP4,      -1, EXT_STEP4,                   -1,                   -1,                   -1,       STEP5,               -1,      -1,
+	  /*           ON_ENTER  ON_LOOP    ON_EXIT  EVT_TIMER_SELBSTHALT  EVT_TIMER_SWITCHWAIT  EVT_TIMER_WAITTOSTOP  EVT_TIMER_STOPCOMMAND   EVT_ON      ELSE */
+    /* IDLE  */   ENT_OFF,      -1,        -1,                   -1,                   -1,                   -1,          -1,            STEP1,      -1,
+	  /* STEP1 */ ENT_STEP1,      -1, EXT_STEP1,                STEP2,                   -1,                   -1,          -1,               -1,      -1,
+	  /* STEP2 */ ENT_STEP2,      -1, EXT_STEP2,                   -1,                   -1,                STEP3,          -1,               -1,      -1,
+	  /* STEP3 */ ENT_STEP3,      -1, EXT_STEP3,                   -1,                STEP4,                   -1,          -1,               -1,      -1,
+	  /* STEP4 */ ENT_STEP4,      -1, EXT_STEP4,                   -1,                   -1,                   -1,       STEP5,               -1,      -1,
 		/* STEP5 */ ENT_STEP5,      -1, EXT_STEP5,                   -1,               ENT_OFF,                   -1,          -1,               -1,      -1,
 	  };
 	Machine::begin(state_table, ELSE);
@@ -49,8 +56,8 @@ J_up& J_up::setchannel(char aChannel) {
 	return *this;
 }
 
-J_up& J_up::configure(int givenTimeDown) {
-	timeup = givenTimeDown;
+J_up& J_up::configure(int givenTimeUp) {
+	timeup = givenTimeUp;
 	return *this;
 }
 /* Add C++ code for each action
@@ -61,50 +68,50 @@ void J_up::action(int id) {
 	switch (id) {
 	case ENT_OFF:
 		Serial.print(channel);
-		Serial.println( "ENT_OFF, idle" );
+    Serial.println((const __FlashStringHelper *) msgENT_OFF);		
 		return;
 	case ENT_STEP1:
-		Serial.print(channel);
-		Serial.println( "ENT_STEP1, driving up till self hold" );
+		Serial.print(channel);		
+    Serial.println((const __FlashStringHelper *) msgENT_STEP1);
 		timer_selbsthalt.set(timeSelbstHalt);
-		digitalWrite(pin_rp, HIGH);
+		digitalWrite(pin_rp, LOW);
 		return;
 	case EXT_STEP1:
 		Serial.print(channel);
-		Serial.println( "EXT_STEP1, self hold started, releasing power");
-		digitalWrite(pin_rp, LOW);
+    Serial.println((const __FlashStringHelper *) msgEXT_STEP1);
+		digitalWrite(pin_rp, HIGH);
 		return;
 	case ENT_STEP2:
 		Serial.print(channel);
-		Serial.println( "ENT_STEP2, driving up");
+    Serial.println((const __FlashStringHelper *) msgENT_STEP2);	
 		timer_driving_up.set(timeup);
 		return;
 	case ENT_STEP3:
 		Serial.print(channel);
-		Serial.println( "ENT_STEP3, preparing stop");
+    Serial.println((const __FlashStringHelper *) msgENT_STEP3);
 		timer_switchwait.set(timeSwitchWait);
-		digitalWrite(pin_rd, HIGH);
+		digitalWrite(pin_rd, LOW);
 		return;
 	case EXT_STEP3:
 		Serial.print(channel);
-		Serial.println( "EXT_STEP3, stop command" );
-		digitalWrite(pin_rp, HIGH);
+    Serial.println((const __FlashStringHelper *) msgEXT_STEP3);		
+		digitalWrite(pin_rp, LOW);
 		return;
 	case ENT_STEP4:
 		timer_stop_command.set(timeStopCommand);
 		return;
 	case EXT_STEP4:
 		Serial.print(channel);
-		Serial.println( "EXT_STEP4, stop command done, releasing power" );
-		digitalWrite(pin_rp, LOW);
+		Serial.println((const __FlashStringHelper *) msgEXT_STEP4);
+		digitalWrite(pin_rp, HIGH);
 		return;
 	case ENT_STEP5:
 		timer_switchwait.set(timeSwitchWait);
 		return;
 	case EXT_STEP5:
 		Serial.print(channel);
-		Serial.println( "EXT_STEP5, release direction relay" );
-		digitalWrite(pin_rd, LOW);
+    Serial.println((const __FlashStringHelper *) msgEXT_STEP5);		
+		digitalWrite(pin_rd, HIGH);
 		return;
 	}
 }

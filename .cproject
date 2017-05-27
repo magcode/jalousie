@@ -23,6 +23,10 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/jalousie/core/variant}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/jalousie/libraries/Automaton}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/jalousie/libraries/Automaton/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/jalousie/libraries/SPI}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/jalousie/libraries/SPI/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/jalousie/libraries/Ethernet}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/jalousie/libraries/Ethernet/src}&quot;"/>
 								</option>
 								<inputType id="it.baeyens.arduino.compiler.cpp.sketch.input.1379982402" name="CPP source files" superClass="it.baeyens.arduino.compiler.cpp.sketch.input"/>
 							</tool>
@@ -32,6 +36,10 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/jalousie/core/variant}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/jalousie/libraries/Automaton}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/jalousie/libraries/Automaton/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/jalousie/libraries/SPI}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/jalousie/libraries/SPI/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/jalousie/libraries/Ethernet}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/jalousie/libraries/Ethernet/src}&quot;"/>
 								</option>
 								<inputType id="it.baeyens.arduino.compiler.c.sketch.input.1534319122" name="C Source Files" superClass="it.baeyens.arduino.compiler.c.sketch.input"/>
 							</tool>

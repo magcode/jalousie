@@ -36,6 +36,6 @@ private:
 	int timeturn;
 	int timeSwitchWait = 100;
 	int timeStopCommand = 200;
-	int timeWaitAfterStop = 1000;
-	int timeSelbstHalt = 2000;
+	int timeWaitAfterStop = 500;
+	int timeSelbstHalt = 2600;
 };
