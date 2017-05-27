@@ -1,7 +1,7 @@
 #include "J_down.h"
 const char msgENT_OFF [] PROGMEM = "-idle";
 const char msgENT_STEP1 [] PROGMEM = "-preparing direction";
-const char msgENT_STEP2_1 [] PROGMEM = "-drive till self hold";
+const char msgENT_STEP2_1 [] PROGMEM = "-driving down till self hold";
 const char msgENT_STEP2_2 [] PROGMEM = "-short drive";
 const char msgEXT_STEP2 [] PROGMEM = "-self hold started, release power";
 const char msgENT_STEP3 [] PROGMEM = "-wait before release direction";
