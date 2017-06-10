@@ -53,7 +53,7 @@ void processCommand(char* topic, char* durationRaw) {
   char delimiterMotors[] = ",";
   
   int iCommand = 0;
-  int iDurDrive = 0;
+  long iDurDrive = 0L;
   int iDurTurn = 0;
 
   // split the full incoming mqtt message
@@ -81,7 +81,7 @@ void processCommand(char* topic, char* durationRaw) {
   ii=0;
   while(payloads != NULL) {
     if (ii==0) {
-      iDurDrive = atoi(payloads);
+      iDurDrive = atol(payloads);
     } else if (ii==1) {
       iDurTurn = atoi(payloads);
     }

@@ -21,7 +21,7 @@ public:
 	int state(void);
 	J_down& begin(int pin_rd, int pin_rp);
 	J_down& setchannel(char channel);
-	J_down& configure(int timedown, int timeturn);
+	J_down& configure(long timedown, int timeturn);
 
 private:
   J_down& debug(char* aChar);
@@ -33,7 +33,7 @@ private:
 	int pin_rd, pin_rp;
 	atm_timer_millis timer_selbsthalt, timer_switchwait, timer_driving_down, timer_stop_command, timer_waitafterstop, timer_turn;
 	char channel;
-	int timedown;
+	long timedown;
 	int timeturn;
 	int timeSwitchWait = 100;
 	int timeStopCommand = 200;

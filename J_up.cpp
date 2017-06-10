@@ -62,7 +62,7 @@ J_up& J_up::setchannel(char aChannel) {
 	return *this;
 }
 
-J_up& J_up::configure(int givenTimeUp) {
+J_up& J_up::configure(long givenTimeUp) {
 	timeup = givenTimeUp;
 	return *this;
 }

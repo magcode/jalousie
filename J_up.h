@@ -20,7 +20,7 @@ public:
 	int state(void);
 	J_up& begin(int pin_rd, int pin_rp);
 	J_up& setchannel(char channel);
-	J_up& configure(int timeup);
+	J_up& configure(long timeup);
 
 private:
   J_up& debug(char* aChar);
@@ -31,7 +31,7 @@ private:
 	int pin_rd, pin_rp;
 	atm_timer_millis timer_selbsthalt, timer_switchwait, timer_driving_up, timer_stop_command, timer_driving_up_short;
 	char channel;
-	int timeup;
+	long timeup;
 	int timeSwitchWait = 100;
 	int timeStopCommand = 200;
 	int timeSelbstHalt = 2600;

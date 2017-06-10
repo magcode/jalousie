@@ -71,7 +71,7 @@ J_down& J_down::setchannel(char aChannel) {
 	return *this;
 }
 
-J_down& J_down::configure(int givenTimeDown, int givenTimeTurn) {
+J_down& J_down::configure(long givenTimeDown, int givenTimeTurn) {
 	timedown = givenTimeDown;
 	timeturn = givenTimeTurn;
 	return *this;
